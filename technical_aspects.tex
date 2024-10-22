@@ -11,3 +11,69 @@
 4 тепловые – реагируют на появление предметов с определенной температурой в зоне охвата, пригодны для использования в помещениях или после захода солнца;
 Мы определили свой выбор на инфракрасном датчике движения, ведь он не имеет значительных минусов и применяется гораздо чаще остальных. 
 На рисунке pic1 представлена схема похожего датчика.
+Пример кода датчика (язык си):
+#include <iostream>
+#include <thread>
+#include <chrono>
+
+class DoorSensor {
+public:
+    DoorSensor() : isOpen(false) {}
+
+    void openDoor() {
+        isOpen = true;
+        std::cout << "Дверь открыта!" << std::endl;
+    }
+
+    void closeDoor() {
+        isOpen = false;
+        std::cout << "Дверь закрыта!" << std::endl;
+    }
+
+    bool isDoorOpen() const {
+        return isOpen;
+    }
+
+private:
+    bool isOpen;
+};
+
+class AlarmSystem {
+public:
+    void activateAlarm() {
+        std::cout << "Сигнализация активирована! Звонок тревоги!" << std::endl;
+    }
+
+    void deactivateAlarm() {
+        std::cout << "Сигнализация деактивирована." << std::endl;
+    }
+};
+
+int main() {
+    DoorSensor doorSensor;
+    AlarmSystem alarm;
+
+    // Симуляция работы системы
+    while (true) {
+        char command;
+        std::cout << "Введите 'o' для открытия двери, 'c' для закрытия двери, 'q' для выхода: ";
+        std::cin >> command;
+
+        if (command == 'o') {
+            doorSensor.openDoor();
+            alarm.activateAlarm(); // Активируем сигнализацию при открытии
+        } else if (command == 'c') {
+            doorSensor.closeDoor();
+            alarm.deactivateAlarm(); // Деактивируем сигнализацию при закрытии
+        } else if (command == 'q') {
+            break; // Выход из программы
+        } else {
+            std::cout << "Некорректная команда!" << std::endl;
+        }
+
+        // Задержка для предотвращения быстрого цикла
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+
+    return 0;
+}
